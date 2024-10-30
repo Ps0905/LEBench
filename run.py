@@ -20,7 +20,7 @@ RESULT_DIR       = '/RESULT_DIR/'
 TEST_DIR         = '/TEST_DIR/'
 TEST_NAME        = 'OS_Eval'
 
-os.environ['LEBENCH_DIR'] = '/home/purnya/benchmark/LEBench' #Set LEBENCH_DIR
+os.environ['LEBENCH_DIR'] = '/home/purnya/benchmark/LEBench'  # Set LEBENCH_DIR
 
 """ Grabs the ith kernel from KERN_LIST_FILE.
 """
@@ -40,44 +40,44 @@ def get_kern_list(idx):
 
 """ Modifies the grub file to boot into the target kernel the next time.
 """
-def generate_grub_file(f, target_kern):
-    if DEBUG: print('[DEBUG]    Preparing grub for kernel: ' + target_kern)
-    if DEBUG: print('[DEBUG]--------------------------------------------------')
+# def generate_grub_file(f, target_kern):
+#     if DEBUG: print('[DEBUG]    Preparing grub for kernel: ' + target_kern)
+#     if DEBUG: print('[DEBUG]--------------------------------------------------')
 
-    if not os.path.exists(f):
-        raise ValueError("File %s does not exist." % f)
+#     if not os.path.exists(f):
+#         raise ValueError("File %s does not exist." % f)
 
-    kern_image_name = 'vmlinuz-%s' % target_kern
-    if not os.path.exists(os.path.join('/', 'boot', kern_image_name)):
-        raise ValueError('Kernel image %s does not exist' % kern_image_name)
+#     kern_image_name = 'vmlinuz-%s' % target_kern
+#     if not os.path.exists(os.path.join('/', 'boot', kern_image_name)):
+#         raise ValueError('Kernel image %s does not exist' % kern_image_name)
 
-    print('[INFO] Setting boot version to ' +  target_kern + '.')
-    with open(f, 'r') as fp:
-        lines = fp.readlines()
+#     print('[INFO] Setting boot version to ' +  target_kern + '.')
+#     with open(f, 'r') as fp:
+#         lines = fp.readlines()
 
-        for idx, line in enumerate(lines):
-            if line.startswith('GRUB_DEFAULT'):
-                line = 'GRUB_DEFAULT="Advanced options for Ubuntu>Ubuntu, with Linux %s"\n' % target_kern
-                lines[idx] = line
+#         for idx, line in enumerate(lines):
+#             if line.startswith('GRUB_DEFAULT'):
+#                 line = 'GRUB_DEFAULT="Advanced options for Ubuntu>Ubuntu, with Linux %s"\n' % target_kern
+#                 lines[idx] = line
         
-    with open(LOCAL_GRUB_FILE, 'w+') as fp:
-        fp.writelines(lines)
+#     with open(LOCAL_GRUB_FILE, 'w+') as fp:
+#         fp.writelines(lines)
     
-    return True
+#     return True
 
 """Sets up grub using configured grub file and shell cmds
 """
-def install_grub_file():
-    if DEBUG: print("[DEBUG] Copying GRUB config to %s" % GRUB_FILE)
-    call(['sudo', 'cp', LOCAL_GRUB_FILE, GRUB_FILE])
-    if DEBUG: print("[DEBUG] Configuring boot")
-    call(['sudo', 'grub-install', '--force', '--target=i386-pc', '/dev/sda1'])
-    if DEBUG: print("[DEBUG] Making grub config")
-    call(['sudo', 'grub-mkconfig', '-o', GRUB_CFG_FILE])
+# def install_grub_file():
+#     if DEBUG: print("[DEBUG] Copying GRUB config to %s" % GRUB_FILE)
+#     call(['sudo', 'cp', LOCAL_GRUB_FILE, GRUB_FILE])
+#     if DEBUG: print("[DEBUG] Configuring boot")
+#     call(['sudo', 'grub-install', '--force', '--target=i386-pc', '/dev/sda1'])
+#     if DEBUG: print("[DEBUG] Making grub config")
+#     call(['sudo', 'grub-mkconfig', '-o', GRUB_CFG_FILE])
 
-def restart():
-    print('[INFO] Restarting the machine now.')
-    call(['sudo', 'reboot'])
+# def restart():
+#     print('[INFO] Restarting the machine now.')
+#     call(['sudo', 'reboot'])
 
 """ Running the LEBench tests for the current kernel version.
 """
@@ -149,38 +149,38 @@ if __name__ == '__main__':
             raise ValueError('"kern_list" file is empty, '
                              'run "get_kern.py" to generate this file by grepping all install kernels.')
 
-    # For running LEBench on one specified kernel version.
-    if len(sys.argv) > 1:
-        kern_version = sys.argv[1]
-        print("[INFO] Configuring to boot into " + kern_version + ".")
-        generate_grub_file(WORKING_DIR + 'template/grub', kern_version)
-        install_grub_file()
-        sys.exit(0)
+    # Commenting out the sections related to switching kernels
+    # if len(sys.argv) > 1:
+    #     kern_version = sys.argv[1]
+    #     print("[INFO] Configuring to boot into " + kern_version + ".")
+    #     generate_grub_file(WORKING_DIR + 'template/grub', kern_version)
+    #     install_grub_file()
+    #     sys.exit(0)
 
     # For running LEBench on a list of specified kernel versions.
-    if not os.path.exists(KERN_INDEX_FILE):
-        with open(KERN_INDEX_FILE, 'w') as f:
-            f.write("-1\n")
+    # if not os.path.exists(KERN_INDEX_FILE):
+    #     with open(KERN_INDEX_FILE, 'w') as f:
+    #         f.write("-1\n")
 
-    with open(KERN_INDEX_FILE, 'r') as f:
-        kern_idx = int(f.read())
-    next_kern_idx = kern_idx + 1
-    if DEBUG: print('[DEBUG] Running at kernel index: ' + str(kern_idx))
+    # with open(KERN_INDEX_FILE, 'r') as f:
+    #     kern_idx = int(f.read())
+    # next_kern_idx = kern_idx + 1
+    # if DEBUG: print('[DEBUG] Running at kernel index: ' + str(kern_idx))
     
-    with open(KERN_INDEX_FILE, 'w') as fp:
-        fp.write(str(next_kern_idx).strip())
+    # with open(KERN_INDEX_FILE, 'w') as fp:
+    #     fp.write(str(next_kern_idx).strip())
 
-    if DEBUG: print('[DEBUG] Done writing kernel index %d for the next iteration' % next_kern_idx + '.')
+    # if DEBUG: print('[DEBUG] Done writing kernel index %d for the next iteration' % next_kern_idx + '.')
 
-    if next_kern_idx == 0:
-        # Need to boot into the right kernel version first.
-        print('[INFO] LEBench tests will start after booting into the first kernel.')
-    else:
-        # We are at the right kernel version, actually run LEBench.
-        run_bench()
+    # if next_kern_idx == 0:
+    #     # Need to boot into the right kernel version first.
+    #     print('[INFO] LEBench tests will start after booting into the first kernel.')
+    # else:
+    #     # We are at the right kernel version, actually run LEBench.
+    run_bench()
 
-    if DEBUG: print('[DEBUG] Preparing to modify grub.')
-    if generate_grub_file(WORKING_DIR + 'template/grub', get_kern_list(next_kern_idx)):
-        install_grub_file()
-        if DEBUG: print('[DEBUG] Done configuring grub for the next kernel.')
-        restart()
+    # if DEBUG: print('[DEBUG] Preparing to modify grub.')
+    # if generate_grub_file(WORKING_DIR + 'template/grub', get_kern_list(next_kern_idx)):
+    #     install_grub_file()
+    #     if DEBUG: print('[DEBUG] Done configuring grub for the next kernel.')
+    #     restart()
