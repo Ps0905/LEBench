@@ -20,7 +20,7 @@ RESULT_DIR       = '/RESULT_DIR/'
 TEST_DIR         = '/TEST_DIR/'
 TEST_NAME        = 'OS_Eval'
 
-os.environ['LEBENCH_DIR'] = '/home/purnya/benchmark/LEBench' //Set LEBENCH_DIR
+os.environ['LEBENCH_DIR'] = '/home/purnya/benchmark/LEBench' #Set LEBENCH_DIR
 
 """ Grabs the ith kernel from KERN_LIST_FILE.
 """
